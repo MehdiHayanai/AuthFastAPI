@@ -1,0 +1,43 @@
+{
+    "files.exclude": {
+        "**/.git": true,
+        "**/dist": true,
+        "**/build": true,
+        "**/env/**": true,
+        "**/venv/**": true,
+        "**/virtualenv/**": true,
+        "**/__pycache__": true,
+        "**/**/*.pyc": true,
+        "**/*.egg-info": true,
+    },
+    "files.watcherExclude": {
+        "**/.git/objects/**": true,
+        "**/build/**": true,
+        "**/dist/**": true,
+        "**/env/**": true,
+        "**/venv/**": true,
+        "**/virtualenv/**": true,
+        "**/__pycache__": true,
+        "**/**/*.pyc": true,
+        "**/*.egg-info": true,
+    },
+    "[python]": {
+        "editor.codeActionsOnSave": {
+            "source.organizeImports.ruff": "explicit"
+        },
+        "editor.defaultFormatter": "charliermarsh.ruff",
+    },
+    "editor.formatOnSave": true,
+    "editor.formatOnPaste": true,
+    "editor.rulers": [
+        79,
+        88,
+    ],
+    // ergonomics
+    "editor.guides.indentation": true, //those are the vertical bars showing indentation on the left
+    // python specifics
+    "python.testing.pytestEnabled": true,
+    "python.analysis.extraPaths": [
+        "./src"
+    ],
+}
