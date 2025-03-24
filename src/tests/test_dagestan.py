@@ -1,4 +1,4 @@
-from lib_template.dummy import send_to_dagestan
+from scanner.dummy import send_to_dagestan
 
 
 def test_send_to_dagestan() -> None:
