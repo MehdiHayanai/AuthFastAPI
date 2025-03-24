@@ -1,5 +1,5 @@
 [project]
-name = "lib-template"
+name = "scanner"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
