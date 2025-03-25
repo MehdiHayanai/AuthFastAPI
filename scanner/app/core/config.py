@@ -7,7 +7,6 @@ from pydantic import BaseSettings, field_validator
 class Settings(BaseSettings):
     PROJECT_NAME: str = "Scanner"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60
-    ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
     API_VERSION: str = os.environ.get("API_VERSION", "v1")
     DATABASE_URL: str = os.environ.get("DATABASE_URL")
     HASHING_ALGORITHM: str = os.environ.get("HASHING_ALGORITHM")
