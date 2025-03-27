@@ -16,6 +16,9 @@ class AutoRefreshMiddleware(BaseHTTPMiddleware):
         public_paths = [
             f"/api/{api_version}/auth/login",
             f"/api/{api_version}/auth/register",
+            "/",
+            "ping",
+            "/health",
         ]
         if any(request.url.path.startswith(p) for p in public_paths):
             return await call_next(request)
