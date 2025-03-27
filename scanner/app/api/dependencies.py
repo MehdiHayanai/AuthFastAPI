@@ -37,16 +37,16 @@ def get_current_user(
             )
 
         # Check if the ip address matches
-        db_tokken = db.query(Token).filter(Token.token == token).first()
-        if db_tokken is None:
+        db_token = db.query(Token).filter(Token.token == token).first()
+        if db_token is None:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="Invalid token",
                 headers={"WWW-Authenticate": "Bearer"},
             )
 
-        ip_adress = token_data.ip_address
-        if ip_adress != db_tokken.ip_address:
+        ip_address = token_data.ip_address
+        if ip_address != db_tokken.ip_address:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="Invalid IP address",
