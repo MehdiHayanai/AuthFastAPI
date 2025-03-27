@@ -1,12 +1,10 @@
-from datetime import datetime
-
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
-from jose import jwt
+from jwt import PyJWTError
 from pydantic import ValidationError
 from sqlalchemy.orm import Session
 
-from app.core.config import settings
+from app.api.routes.v1.auth import AUTH_ROUTER_PREFIX
 from app.core.database import get_db
 from app.core.security import decode_jwt_token
 from app.core.utils import get_current_datetime
@@ -14,7 +12,7 @@ from app.db.models.token import Token
 from app.db.models.user import User
 from app.schemas.token import TokenPayload
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl=f"{settings.API_VERSION}/auth/login")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl=f"{AUTH_ROUTER_PREFIX}/login")
 
 
 def get_current_user(
@@ -31,7 +29,7 @@ def get_current_user(
         token_data = TokenPayload(**payload)
 
         # Check token expiration
-        if datetime.fromtimestamp(token_data.exp) < get_current_datetime():
+        if token_data.exp < get_current_datetime():
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="Token expired",
@@ -55,7 +53,7 @@ def get_current_user(
                 headers={"WWW-Authenticate": "Bearer"},
             )
 
-    except (jwt.JWTError, ValidationError):
+    except (PyJWTError, ValidationError):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Could not validate credentials",
@@ -63,7 +61,7 @@ def get_current_user(
         )
 
     # Get user from database
-    user = db.query(User).filter(User.id == int(token_data.sub)).first()
+    user = db.query(User).filter(User.id == int(token_data.user_id)).first()
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
     if not user.is_active:

@@ -1,21 +1,22 @@
-from datetime import datetime, timedelta
+from datetime import timedelta
 
-from app.core.config import settings
-from app.core.database import SessionLocal
-from app.core.security import create_jwt_token, create_token_payload, decode_jwt_token
-from app.core.utils import get_current_datetime
-from app.db.models.token import Token
 from fastapi import Request
 from starlette.middleware.base import BaseHTTPMiddleware
+
+from app.api.routes.v1 import AUTH_ROUTER_PREFIX
+from app.core.config import settings
+from app.core.database import SessionLocal
+from app.core.security import creat_token_object, create_jwt_token, decode_jwt_token
+from app.core.utils import get_current_datetime
+from app.db.models.token import Token
 
 
 class AutoRefreshMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next):
         # Skip for non-authenticated routes
-        api_version = settings.API_VERSION
         public_paths = [
-            f"/api/{api_version}/auth/login",
-            f"/api/{api_version}/auth/register",
+            f"/{AUTH_ROUTER_PREFIX}/login",
+            f"/{AUTH_ROUTER_PREFIX}/register",
             "/",
             "ping",
             "/health",
@@ -65,14 +66,14 @@ class AutoRefreshMiddleware(BaseHTTPMiddleware):
 
                     if db_token:
                         # Create new token
-                        new_payload = create_token_payload(
+                        new_payload = creat_token_object(
                             user_id,
                             timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES),
                         )
-                        new_token = create_jwt_token(new_payload)
+                        new_token = create_jwt_token(new_payload.model_dump())
 
                         # Update token in database
-                        new_expires_at = datetime.fromtimestamp(new_payload["exp"])
+                        new_expires_at = new_payload.exp
                         db_token.token = new_token
                         db_token.expires_at = new_expires_at
                         db_token.last_used_at = get_current_datetime()
