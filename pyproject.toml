@@ -1,5 +1,5 @@
 [project]
-name = "lib-template"
+name = "scanner"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
@@ -8,9 +8,19 @@ authors = [
 ]
 requires-python = ">=3.9"
 dependencies = [
+    "fastapi>=0.115.12",
     "ipykernel>=6.29.5",
+    "passlib[bcrypt]>=1.7.4",
+    "pydantic-settings>=2.8.1",
+    "pydantic[email]>=2.10.6",
+    "pyjwt>=2.10.1",
     "pytest>=8.3.5",
+    "python-dotenv>=1.0.1",
+    "python-jose[cryptography]>=3.4.0",
+    "python-multipart>=0.0.20",
     "ruff>=0.11.2",
+    "sqlalchemy>=2.0.39",
+    "uvicorn>=0.34.0",
 ]
 
 [build-system]
