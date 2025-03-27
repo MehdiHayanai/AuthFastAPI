@@ -19,3 +19,8 @@ class Token(Base):
     user_agent = Column(String, nullable=True)
 
     user = relationship("User", back_populates="tokens")
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.created_at = get_current_datetime()
+        self.last_used_at = self.created_at
