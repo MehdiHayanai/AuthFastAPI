@@ -46,7 +46,7 @@ def get_current_user(
             )
 
         ip_address = token_data.ip_address
-        if ip_address != db_tokken.ip_address:
+        if ip_address != db_token.ip_address:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="Invalid IP address",
