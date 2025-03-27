@@ -4,7 +4,7 @@ from jwt import PyJWTError
 from pydantic import ValidationError
 from sqlalchemy.orm import Session
 
-from app.api.routes.v1.auth import AUTH_ROUTER_PREFIX
+from app.api.routes.v1 import AUTH_ROUTER_PREFIX
 from app.core.database import get_db
 from app.core.security import decode_jwt_token
 from app.core.utils import get_current_datetime

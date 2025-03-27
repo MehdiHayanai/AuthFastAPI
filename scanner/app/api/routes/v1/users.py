@@ -1,15 +1,14 @@
 from typing import Any, List
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 from app.api.dependencies import get_current_active_superuser, get_current_user
+from app.api.routes.v1 import USER_ROUTER_PREFIX
 from app.core.database import get_db
 from app.db.models.user import User
 from app.schemas.user import User as UserSchema
 from app.schemas.user import UserUpdate
-
-USER_ROUTER_PREFIX = "/api/v1/users"
 
 router = APIRouter(prefix=USER_ROUTER_PREFIX, tags=["users"])
 
@@ -35,7 +34,19 @@ def update_user_me(
     Update current user.
     """
     # Update user fields
-    for field, value in user_in.dict(exclude_unset=True).items():
+    for field, value in user_in.model_dump(exclude_unset=True).items():
+        if field == "is_superuser" and value and not current_user.is_superuser:
+            raise HTTPException(
+                status_code=403,
+                detail="You do not have permission to update this field",
+            )
+        
+        if field == "is_active" and not value and not current_user.is_superuser:
+            raise HTTPException(
+                status_code=403,
+                detail="You do not have permission to deactivate this account",
+            )
+
         setattr(current_user, field, value)
 
     db.add(current_user)

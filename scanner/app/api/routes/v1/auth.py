@@ -18,7 +18,7 @@ from app.db.models.token import Token
 from app.db.models.user import User
 from app.schemas.token import Token as TokenSchema
 from app.schemas.user import User as UserSchema
-from app.schemas.user import UserCreate, UserInDB
+from app.schemas.user import UserCreate, UserCreateAdmin, UserInDB
 
 AUTH_ROUTER_PREFIX = "/api/v1/auth"
 
@@ -57,6 +57,47 @@ def register_new_user(
     db.commit()
     db.refresh(db_user)
     return db_user
+
+
+@router.post("/register-admin", response_model=UserSchema)
+def register_admin_user(user_in: UserCreateAdmin, db: Session = Depends(get_db)) -> Any:
+    if not verify_password(user_in.master_password, settings.MASTER_PASSWORD_HASH):
+        raise HTTPException(
+            status_code=400,
+            detail="Invalid master password",
+        )
+
+    # Check if user exists
+    user = (
+        db.query(User)
+        .filter((User.email == user_in.email) | (User.username == user_in.username))
+        .first()
+    )
+    if user:
+        raise HTTPException(
+            status_code=400,
+            detail="User with this email or username already exists",
+        )
+
+    # Create new user
+    db_user = User(
+        email=user_in.email,
+        username=user_in.username,
+        hashed_password=get_password_hash(user_in.password),
+        is_active=True,
+        is_superuser=True,
+    )
+
+    db.add(db_user)
+    db.commit()
+    db.refresh(db_user)
+    user_in_db = UserSchema(
+        email=db_user.email,
+        username=db_user.username,
+        id=db_user.id,
+        is_superuser=db_user.is_superuser,
+    )
+    return user_in_db
 
 
 @router.post("/register-superuser", response_model=UserSchema)
@@ -110,6 +151,9 @@ def login_for_access_token(
     user = db.query(User).filter(User.username == form_data.username).first()
     if not user or not verify_password(form_data.password, user.hashed_password):
         raise HTTPException(status_code=400, detail="Incorrect username or password")
+
+    if not user.is_active:
+        raise HTTPException(status_code=400, detail="Inactive user")
 
     # Get client info
     ip_address = request.client.host
