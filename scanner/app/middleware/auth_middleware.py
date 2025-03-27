@@ -15,8 +15,8 @@ class AutoRefreshMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next):
         # Skip for non-authenticated routes
         public_paths = [
-            f"/{AUTH_ROUTER_PREFIX}/login",
-            f"/{AUTH_ROUTER_PREFIX}/register",
+            f"{AUTH_ROUTER_PREFIX}/login",
+            f"{AUTH_ROUTER_PREFIX}/register",
             "/",
             "ping",
             "/health",
