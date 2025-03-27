@@ -15,9 +15,17 @@ class Settings(BaseSettings):
     HASHING_ALGORITHM: str = os.environ.get("HASHING_ALGORITHM")
     SECRET_KEY: str = os.environ.get("SECRET_KEY")
     USER_TABLE: str = os.environ.get("USER_TABLE")
+    MASTER_PASSWORD_HASH: str = os.environ.get("MASTER_PASSWORD_HASH")
 
     @field_validator(
-        "DATABASE_URL", "HASHING_ALGORITHM", "SECRET_KEY", "USER_TABLE", mode="before"
+        "TOKEN_TABLE",
+        "API_VERSION",
+        "DATABASE_URL",
+        "HASHING_ALGORITHM",
+        "SECRET_KEY",
+        "USER_TABLE",
+        "MASTER_PASSWORD_HASH",
+        mode="before",
     )
     def validate_required_fields(cls, value, field):
         if not value:

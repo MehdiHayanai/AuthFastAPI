@@ -17,6 +17,14 @@ class UserCreate(UserBase):
     password: str
 
 
+class UserCreateAdmin(UserBase):
+    email: EmailStr
+    username: str
+    password: str
+    is_superuser: bool = True
+    master_password: str
+
+
 # Properties to receive via API on update
 class UserUpdate(UserBase):
     password: Optional[str] = None
