@@ -1,12 +1,16 @@
-from datetime import datetime, timedelta
+from datetime import timedelta
 from typing import Any
+
+from fastapi import APIRouter, Depends, HTTPException, Request
+from fastapi.security import OAuth2PasswordRequestForm
+from sqlalchemy.orm import Session
 
 from app.api.dependencies import get_current_active_superuser
 from app.core.config import settings
 from app.core.database import get_db
 from app.core.security import (
+    creat_token_object,
     create_jwt_token,
-    create_token_payload,
     get_password_hash,
     verify_password,
 )
@@ -15,11 +19,10 @@ from app.db.models.user import User
 from app.schemas.token import Token as TokenSchema
 from app.schemas.user import User as UserSchema
 from app.schemas.user import UserCreate, UserInDB
-from fastapi import APIRouter, Depends, HTTPException, Request
-from fastapi.security import OAuth2PasswordRequestForm
-from sqlalchemy.orm import Session
 
-router = APIRouter(prefix="/api/v1/auth", tags=["auth"])
+AUTH_ROUTER_PREFIX = "/api/v1/auth"
+
+router = APIRouter(prefix=AUTH_ROUTER_PREFIX, tags=["auth"])
 
 
 @router.post("/register", response_model=UserSchema)
@@ -121,11 +124,12 @@ def login_for_access_token(
         hashed_password=user.hashed_password,
         is_active=user.is_active,
         is_superuser=user.is_superuser,
+        ip_address=ip_address,
     )
-    payload = create_token_payload(user_in_db, access_token_expires)
+    payload = creat_token_object(user_in_db, access_token_expires).model_dump()
     access_token = create_jwt_token(payload)
     # Store token in database
-    token_expiry = datetime.fromtimestamp(payload["exp"])
+    token_expiry = payload["exp"]
     db_token = Token(
         token=access_token,
         expires_at=token_expiry,

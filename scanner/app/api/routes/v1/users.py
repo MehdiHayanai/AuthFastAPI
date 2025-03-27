@@ -1,14 +1,17 @@
 from typing import Any, List
 
+from fastapi import APIRouter, Depends
+from sqlalchemy.orm import Session
+
 from app.api.dependencies import get_current_active_superuser, get_current_user
 from app.core.database import get_db
 from app.db.models.user import User
 from app.schemas.user import User as UserSchema
 from app.schemas.user import UserUpdate
-from fastapi import APIRouter, Depends
-from sqlalchemy.orm import Session
 
-router = APIRouter(prefix="/api/v1/users", tags=["users"])
+USER_ROUTER_PREFIX = "/api/v1/users"
+
+router = APIRouter(prefix=USER_ROUTER_PREFIX, tags=["users"])
 
 
 @router.get("/me", response_model=UserSchema)
