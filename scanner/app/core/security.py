@@ -23,9 +23,9 @@ def create_token_payload(
     subject: UserInDB, expires_delta: Optional[timedelta] = None
 ) -> Dict[str, Any]:
     if expires_delta:
-        expire = get_current_datetime + expires_delta
+        expire = get_current_datetime() + expires_delta
     else:
-        expire = get_current_datetime + timedelta(
+        expire = get_current_datetime() + timedelta(
             minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES
         )
     to_encode = {

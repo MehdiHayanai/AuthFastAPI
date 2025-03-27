@@ -12,6 +12,7 @@ class Settings(BaseSettings):
     HASHING_ALGORITHM: str = os.environ.get("HASHING_ALGORITHM")
     SECRET_KEY: str = os.environ.get("SECRET_KEY")
     USER_TABLE: str = os.environ.get("USER_TABLE")
+    TOKEN_REFRESH_THRESHOLD_PERCENT: float = 0.1  # 10% of the total lifetime
 
     @field_validator(
         "DATABASE_URL", "HASHING_ALGORITHM", "SECRET_KEY", "USER_TABLE", mode="before"
