@@ -1,11 +1,13 @@
 from datetime import timedelta
 from typing import Any, Dict, Optional
 
-import jwt
+from jwt import PyJWTError, decode, encode
+from passlib.context import CryptContext
+
 from app.core.config import settings
 from app.core.utils import get_current_datetime
+from app.schemas.token import TokenPayload
 from app.schemas.user import UserInDB
-from passlib.context import CryptContext
 
 # Password hashing context
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -38,16 +40,25 @@ def create_token_payload(
     return to_encode
 
 
+def creat_token_object(
+    subject: UserInDB, expires_delta: Optional[timedelta] = None
+) -> TokenPayload:
+    payload = create_token_payload(subject, expires_delta)
+    return TokenPayload(**payload)
+
+
 def create_jwt_token(data: Dict[str, Any]) -> str:
-    encoded_jwt = jwt.encode(data, settings.SECRET_KEY, algorithm=settings.ALGORITHM)
+    encoded_jwt = encode(
+        data, settings.SECRET_KEY, algorithm=settings.HASHING_ALGORITHM
+    )
     return encoded_jwt
 
 
 def decode_jwt_token(token: str) -> Optional[Dict[str, Any]]:
     try:
-        decoded_token = jwt.decode(
-            token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM]
+        decoded_token = decode(
+            token, settings.SECRET_KEY, algorithms=[settings.HASHING_ALGORITHM]
         )
         return decoded_token
-    except jwt.PyJWTError:
+    except PyJWTError:
         return None

@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import Optional
 
 from pydantic import BaseModel
@@ -9,8 +10,8 @@ class Token(BaseModel):
 
 
 class TokenPayload(BaseModel):
-    sub: Optional[str] = None
-    exp: Optional[int] = None
-    ip_address: Optional[str] = None
-    username: Optional[str] = None
-    user_id: Optional[int] = None
+    sub: str
+    exp: datetime
+    ip_address: str
+    username: str
+    user_id: int
