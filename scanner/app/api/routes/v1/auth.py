@@ -9,8 +9,8 @@ from app.api.dependencies import get_current_active_superuser
 from app.core.config import settings
 from app.core.database import get_db
 from app.core.security import (
-    creat_token_object,
     create_jwt_token,
+    create_token_object,
     get_password_hash,
     verify_password,
 )
@@ -170,7 +170,7 @@ def login_for_access_token(
         is_superuser=user.is_superuser,
         ip_address=ip_address,
     )
-    payload = creat_token_object(user_in_db, access_token_expires).model_dump()
+    payload = create_token_object(user_in_db, access_token_expires).model_dump()
     access_token = create_jwt_token(payload)
     # Store token in database
     token_expiry = payload["exp"]

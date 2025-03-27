@@ -40,7 +40,7 @@ def create_token_payload(
     return to_encode
 
 
-def creat_token_object(
+def create_token_object(
     subject: UserInDB, expires_delta: Optional[timedelta] = None
 ) -> TokenPayload:
     payload = create_token_payload(subject, expires_delta)

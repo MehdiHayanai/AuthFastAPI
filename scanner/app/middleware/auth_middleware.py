@@ -6,7 +6,7 @@ from starlette.middleware.base import BaseHTTPMiddleware
 from app.api.routes.v1 import AUTH_ROUTER_PREFIX
 from app.core.config import settings
 from app.core.database import SessionLocal
-from app.core.security import creat_token_object, create_jwt_token, decode_jwt_token
+from app.core.security import create_jwt_token, create_token_object, decode_jwt_token
 from app.core.utils import get_current_datetime
 from app.db.models.token import Token
 
@@ -66,7 +66,7 @@ class AutoRefreshMiddleware(BaseHTTPMiddleware):
 
                     if db_token:
                         # Create new token
-                        new_payload = creat_token_object(
+                        new_payload = create_token_object(
                             user_id,
                             timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES),
                         )
