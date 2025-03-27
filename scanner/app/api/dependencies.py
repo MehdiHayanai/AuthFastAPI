@@ -45,8 +45,8 @@ def get_current_user(
                 headers={"WWW-Authenticate": "Bearer"},
             )
 
-        ip_adress = token_data.ip_address
-        if ip_adress != db_tokken.ip_address:
+        ip_address = token_data.ip_address
+        if ip_address != db_tokken.ip_address:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="Invalid IP address",
