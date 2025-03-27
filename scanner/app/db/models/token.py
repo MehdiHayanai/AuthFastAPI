@@ -1,13 +1,13 @@
-import os
-
-from app.core.utils import get_current_datetime
-from app.db import Base
 from sqlalchemy import Column, DateTime, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
 
+from app.core.config import settings
+from app.core.utils import get_current_datetime
+from app.db import Base
+
 
 class Token(Base):
-    __tablename__ = os.environ.get("TOKENS_TABLE_NAME")
+    __tablename__ = settings.TOKEN_TABLE
 
     id = Column(Integer, primary_key=True, index=True)
     token = Column(String, unique=True, index=True)

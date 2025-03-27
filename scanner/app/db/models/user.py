@@ -1,12 +1,12 @@
-import os
-
-from app.db import Base
 from sqlalchemy import Boolean, Column, Integer, String
 from sqlalchemy.orm import relationship
 
+from app.core.config import settings
+from app.db import Base
+
 
 class User(Base):
-    __tablename__ = os.environ.get("USERS_TABLE_NAME")
+    __tablename__ = settings.USER_TABLE
 
     id = Column(Integer, primary_key=True, index=True)
     username = Column(String, unique=True, index=True)

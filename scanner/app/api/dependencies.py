@@ -1,5 +1,11 @@
 from datetime import datetime
 
+from fastapi import Depends, HTTPException, status
+from fastapi.security import OAuth2PasswordBearer
+from jose import jwt
+from pydantic import ValidationError
+from sqlalchemy.orm import Session
+
 from app.core.config import settings
 from app.core.database import get_db
 from app.core.security import decode_jwt_token
@@ -7,13 +13,8 @@ from app.core.utils import get_current_datetime
 from app.db.models.token import Token
 from app.db.models.user import User
 from app.schemas.token import TokenPayload
-from fastapi import Depends, HTTPException, status
-from fastapi.security import OAuth2PasswordBearer
-from jose import jwt
-from pydantic import ValidationError
-from sqlalchemy.orm import Session
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl=f"{settings.API_V1_STR}/auth/login")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl=f"{settings.API_VERSION}/auth/login")
 
 
 def get_current_user(

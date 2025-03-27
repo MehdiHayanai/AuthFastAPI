@@ -26,7 +26,7 @@ app.add_middleware(
 app.add_middleware(AutoRefreshMiddleware)
 
 # Include API routes
-app.include_router(api_router, prefix=settings.API_V1_STR)
+app.include_router(api_router)
 
 
 @app.get("/")

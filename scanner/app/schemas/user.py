@@ -28,8 +28,7 @@ class UserInDBBase(UserBase):
     ip_address: Optional[str] = None
 
     class Config:
-        orm_mode = True
-        # from_attributes = True TODO verify this config
+        from_attributes = True  # TODO verify this config
 
 
 # Properties to return via API
